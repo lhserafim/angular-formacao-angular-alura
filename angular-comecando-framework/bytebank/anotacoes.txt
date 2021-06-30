@@ -1,0 +1,147 @@
+1.  PORTA DE ENTRADA DO ANGULAR
+    1.1.    A porta inicial do angular é o arquivo index.html
+    1.2.    A partir deste arquivo ele navega para o app.component.ts
+    1.3.    E em seguida para o app.module.ts
+2.  ESTILIZANDO O FORMULÁRIO
+    2.1.    Adicionar código scss ao arquivo de estilo do componente em questão
+    2.2.    Também adicionar as variáveis (pq estamos usando scss), no arquivo styles.scss
+3.  CRIANDO O EVENTO DO FORMULÁRIO
+    3.1.    Na classe nova-transferencia.component.ts, criar um metodo transferir()
+    3.2.    Colocar a chamada do método no template para o evento click
+        3.2.1.  Posso usar o EVENT BIND do click
+                Ex.:
+                <button class="botao" (click)="transferir()">Transferir</button>
+                ou do ngSubmit
+                <form class="formulario" (ngSubmit)="transferir()">
+    3.3.    Para que o comportamento seja o esperado, ou seja, chamar o método da classe, preciso adicionar em app.module.ts o FormsModule
+4.  PROPERTY BIND
+    4.1.    Já que eu tenho o FormsModule importado, eu posso usar a diretiva ngModel para fazer o property bind
+    4.2.    Quando eu uso [ngModel] estou usando o PROPERTY BIND, ou seja, o que está no meu componente é transferido para o meu template
+    4.3.    Quando eu uso [(ngModel)] estou usando o 2 WAY DATA BIND, ou seja, o que está no componente vai para o template e vice-versa.
+5.  EXPORTANDO OS DADOS COM OUTPUT
+    5.1.    Utilizamos o @Output para exportar dados de uma classe (de um componente), para outros, ou seja, propagamos o dado
+            Ex.: @Output() onTranferir = new EventEmitter<any>();
+    IMPORTANTE! Atente-se ao import! Precisa ser: import { Output, EventEmitter } from '@angular/core';
+    5.2.    Dentro do método (aqui o método transferir()), chamar o método .emit() para propagar o evento
+            Ex.:
+            this.onTranferir.emit({
+                valor: this.valor, destino: this.destino
+            })
+    5.3.    Dentro do template desejado (aqui o app.component.html), usar o EVENT BIND para escutar o meu evento (onTranferir)
+            Ex.:
+            <app-nova-transferencia (onTranferir)="transferir($event)"></app-nova-transferencia>
+            IMPORTANTE! Repare que o dado capturado é do tipo $event
+    5.4.    Passar o evento capturado para um método dentro da classe do meu componente
+DICA:   Para evitar o erro: ERROR TypeError: Cannot read property 'valor' of undefined
+        Posso fazer 2 coisas:
+        1.  Inicializar o objeto: 
+            Ex.: transferencia: any = {};
+        2.  Colocar um ? na interpolação para indicar que é opcional
+            Ex.: Valor: {{ transferencia?.valor }}
+6.  ENVIANDO DADOS COM @INPUT
+    6.1.    Para que eu possa enviar dados de um componente para outro, devo usar o @Input
+    6.2.    Dentro da minha classe (extrato), eu crio o meu input:
+            Ex.:
+            @Input() transferencia: any;
+    6.3.    Em seguida, declaro no meu template (extrato) o bind da propriedade transferencia
+            Ex.:
+            Valor: {{ transferencia?.valor }}
+    6.4.    Agora, vou enviar o meu valor do componente app.component.html utilizando o PROPERTY BIND
+            Ex.:    
+            <app-extrato [transferencia]="transferencia"></app-extrato> 
+            O [transferencia] vem da propriedade @Input criada dentro da classe extrato.component.ts
+            Já a variável "transferencia" vem da classe app.component.ts
+7.  EXIBINDO LISTA COM NGFOR
+    7.1.    Vamos transformar as transferencias em uma coleção e utilizar a diretiva estrutural ngFor para exibir como uma lista
+    7.2.    Em app.component.ts, transformar a minha variável transferencia em um array
+            Ex.:
+            transferencias: any[] = [];
+            ...
+            e no método fazer o push no array
+            this.transferencias.push($event);
+    7.3.    Em extrato.component.ts, também transformar em array da mesma forma que foi feito em app.component.ts
+    7.4.    No meu extrato.component.html, vou montar um for, usando a diretiva estrutural *ngFor
+            Ex.:
+            <div *ngFor="let transferencia of transferencias">
+                <p>Valor: {{ transferencia?.valor }}</p>
+                <p>Destino: {{ transferencia?.destino }}</p>
+            </div>
+8.  UTILIZANDO PIPE PARA TRABALHAR COM DATA
+    8.1.    Vou usar o datepipe https://angular.io/api/common/DatePipe
+    8.2.    Adicionar o formato da data desejado ao elemento
+            Ex.:
+            <td>{{ transferencia.data | date: "short"}}</td>
+    8.3.    Setar o LOCALE para PT_BR (https://github.com/angular/angular/issues/20197#issuecomment-361097171)
+        8.3.1.  Fazer a configuração no arquivo app.module.ts
+        8.3.2.  Importar:
+                DEFAULT_CURRENCY_CODE, LOCALE_ID
+                import ptBr from '@angular/common/locales/pt';
+                import { registerLocaleData } from '@angular/common';
+        8.3.3.  Registrar o locale: 
+                Ex.:
+                registerLocaleData(ptBr)
+        8.3.4.  Atualizar os providers:
+                Ex.:
+                providers: [
+                    {provide: LOCALE_ID, useValue: 'pt'},
+                    {provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL'}
+                ],
+9.  UTILIZANDO O NGIF
+    9.1.    Documentação: https://angular.io/api/common/NgIf
+    9.2.    Em extrato.component.html, utilizar uma diretiva de estrutural ngIf para exibir um ngTemplate
+            Ex.:
+            <tbody *ngIf="!!transferencias; else listaVazia">
+10. SERVICE
+    10.1.   Gerando um service: ng g s services/transferencia
+    10.2.   A vantagem de se utilizar services é que eu posso fazer a injeção dentro do construtor de uma classe
+    10.3.   No transferencia.service.ts, criar os atributos privados, os metodos get e set e métodos com as regras de negócio
+    10.4.   Depois, nas classes injetar o service no construtor para pode transmitir os dados
+            Ex.:
+            constructor(private service: TransferenciaService) { }
+11. PREPARANDO A API REST
+    11.1.   Vamos fazer uma API fake e para isso instalar json server https://github.com/typicode/json-server/blob/master/README.md
+    11.2.   Install JSON Server dentro do diretório da aplicacao: npm install -g json-server
+    11.3.   Create a db.json file with some data
+        11.3.1. Aqui criei o arquivo dentro da raiz da aplicacao, no diretório dados
+    11.4.   Start JSON Server dentro do diretório onde está o arquivo db.json (dados): json-server --watch db.json
+    11.5.   A API rest fica no http://localhost:3000/transferencias
+12. CRIANDO UM MODEL.TS
+    12.1.   Pegar meu objeto JSON e colar no site: http://json2ts.com/
+        12.1.1. Um arquivo estilo model.ts será gerado.
+    12.2.   Criar dentro de src/app/ a pasta models e dentro dela o arquivo transferencia.model.ts e colar o conteúdo copiado do site
+            Ex.:
+            export interface Transferencia {
+                id: string;
+                valor: number;
+                destino: string;
+                data: Date;
+            }
+    12.3.   Caso seja necessário, posso alterar alguns atributos para opcional (?)
+13. INTEGRANDO COM A API - GET
+    13.1.   A primeira coisa que devemos fazer, quando queremos trabalhar com uma API é importar o HttpClient no service, essa importação
+            nos permite utilizar get, post, put, etc.
+            Ex.:
+            constructor(private httpClient: HttpClient) { 
+    13.2.   Adicionar aos imports de app.module.ts o HttpClientModule
+    13.3.   Dentro de transferencia.service.ts, criar a requisição get que retorna o observable
+            Ex.:
+            return this.httpClient.get<Transferencia[]>(this.url);
+    13.4.   Em extrato.component.ts, fazer o subscribe do metódo criado no service, que retorna o observable.
+            Ex.:
+            this.service.todas().subscribe((transferencias: Transferencia[]) => {
+                this.transferencias = transferencias;
+            })
+    DICA!   O comando console.table(transferencias); gera uma tabela com os dados no console, o que facilita na validação    
+14. INTEGRANDO COM A API - POST
+    14.1.   Ao transferencia.service.ts, adicionar um método para fazer o post na API. Este método também retorna um observable
+            Ex.:
+            adicionar(transferencia: Transferencia): Observable<Transferencia> {
+                return this.httpClient.post<Transferencia>(this.url, transferencia);
+            }
+    14.2.   Na classe nova-transferencia.component.ts, subscrever no método post, criado no service
+            Ex.:
+            transferir() {
+                    this.service.adicionar({valor: this.valor, destino: this.destino}).subscribe(resultado => { 
+                    this.limparCampos();
+                }, error => console.error(error)); 
+            }
