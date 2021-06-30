@@ -1,9 +1,16 @@
 <!-- Através do EVENT BIND, estou capturando o evento (onTransferir) que foi emitido pelo nova-transferencia.component.ts -->
 <!-- <app-nova-transferencia (onTranferir)="transferir($event)"></app-nova-transferencia> -->
-<app-nova-transferencia></app-nova-transferencia>
+<!-- <app-nova-transferencia></app-nova-transferencia> -->
 
 <!-- O [transferencia] vem da propriedade @Input criada dentro da classe extrato.component.ts
 Já a variável "transferencia" vem da classe app.component.ts  -->
 <!-- <app-extrato [transferencia]="transferencia"></app-extrato> -->
 <!-- <app-extrato [transferencias]="transferencias"></app-extrato> -->
-<app-extrato></app-extrato>
+<!-- <app-extrato></app-extrato> -->
+<header>
+    <a routerLink="extrato">Bytebank</a>
+    <a routerLink="nova-transferencia" routerLinkActive="ativo">Nova transferência</a>
+</header>
+<main>
+    <router-outlet></router-outlet>
+</main>

@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { TransferenciaService } from 'src/app/services/transferencia.service';
 
 @Component({
@@ -15,7 +16,7 @@ export class NovaTransferenciaComponent implements OnInit {
   valor!: number;
   destino!: string;
 
-  constructor(private service: TransferenciaService) { }
+  constructor(private service: TransferenciaService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -30,6 +31,7 @@ export class NovaTransferenciaComponent implements OnInit {
     this.service.adicionar({valor: this.valor, destino: this.destino}).subscribe(resultado => {
       console.log(resultado);
       this.limparCampos(); // preciso colocar aqui pois como é assíncrono preciso garantir que limpe os campos
+      this.router.navigateByUrl('extrato');
     }, error => console.error(error)); // O subscribe permite implementar uma ação quando um erro é retornado
   }
 

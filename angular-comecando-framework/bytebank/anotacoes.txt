@@ -145,3 +145,19 @@ DICA:   Para evitar o erro: ERROR TypeError: Cannot read property 'valor' of und
                     this.limparCampos();
                 }, error => console.error(error)); 
             }
+15. ROTAS
+    15.1.   Vamos separar transferencia de extrato, para que o extrato seja atualizado após uma nova transferencia
+    15.2.   Criar o arquivo app-routing.module.ts, fazendo as importações dos módulos e componentes necessários
+    15.3.   Importar o módulo de rotas em app.module.ts
+    15.4.   Chamar o elemento <router-outlet></router-outlet> em app.component.html
+            Ex.:
+            <header>
+                <a routerLink="extrato">Bytebank</a>
+                <a routerLink="nova-transferencia" routerLinkActive="ativo">Nova transferência</a>
+            </header>
+            <main>
+                <router-outlet></router-outlet>
+            </main>
+    15.5.   Se eu quiser que um componente navegue para outro, automaticamente, posso adicionar a o método a chamada
+            Ex.:
+            this.router.navigateByUrl('extrato');
