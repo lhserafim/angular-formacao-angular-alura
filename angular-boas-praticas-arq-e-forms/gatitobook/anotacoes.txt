@@ -1,0 +1,28 @@
+1.  RODANDO O BACKEND
+    1.1.    Baixar o arquivo com o desenvolvimento do backend https://github.com/alura-cursos/angular_formularios/archive/main.zip
+    1.2.    Após descompactar a pasta, entre pela sua linha de comando na pasta api, use o comando npm i, para instalar as dependências do back-end, 
+            e execute-o com o comando npm start. O back-end deve ser executado durante os nossos exercícios.
+2.  CRIANDO O PROJETO ANGULAR
+    2.1.    Criar o novo projeto, utilizando o CLI do angular: ng new gatitobook --strict
+    DICA:   O --strict é uma flag que "ativa" validações do TypeScript (https://angular.io/guide/strict-mode), tais como: forceConsistentCasingInFileNames, 
+            noImplicitReturns, noFallthroughCasesInSwitch
+    2.2.    Escolher router = y e CSS
+3.  INSTALANDO BOOTSTRAP E FONT AWESOME
+    3.1.    Dentro do diretório da aplicação, entrar com o comando: npm i bootstrap font-awesome
+    3.2.    Em seguida, para utilizar estas 2 bibliotecas, temos que incorporar o CSS ao CSS global do angular
+        3.2.1.  Em angular.json, atulizar o styles:
+                Ex.:
+                "styles": [
+                    "src/styles.css",
+                    "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+                    "./node_modules/font-awesome/css/font-awesome.css"
+                ],
+4.  CRIANDO O MÓDULO HOME
+    4.1.    Vamos criar o módulo home, para que seja possível implementar o roteamento lazy posteriormente.
+            O módulo é a principal forma de organizar o código em uma aplicação angular.
+            Por convenção, chamamos este módulo de FEATURE MODULE e todos os componentes relativos a home estarão neste componente
+    4.2.    Para criar um módulo, já com as configurações de rota, digitar: ng g module home --routing
+5.  CRIANDO O COMPONENTE HOME
+    5.1.    Para criar o componente: ng g c home
+    DICA:   Mesmo sem informar o /home o angular colocou os componentes dentro do mesmo diretório do módulo home
+    IMPORTANTE: Toda vez que eu crio um componente novo eu devo declará-lo no meu módulo. Mas o angular faz isso sozinho
