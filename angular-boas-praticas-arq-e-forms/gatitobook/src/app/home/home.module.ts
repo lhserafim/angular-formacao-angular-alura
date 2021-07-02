@@ -12,6 +12,9 @@ import { HomeComponent } from './home.component';
   imports: [
     CommonModule,
     HomeRoutingModule
+  ],
+  exports: [ // Exportando o componente para que seja vísivel "fora do módulo" (não necessário com rotas Lazy Load)
+    //HomeComponent
   ]
 })
 export class HomeModule { }

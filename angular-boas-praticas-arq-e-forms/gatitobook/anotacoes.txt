@@ -26,3 +26,40 @@
     5.1.    Para criar o componente: ng g c home
     DICA:   Mesmo sem informar o /home o angular colocou os componentes dentro do mesmo diretório do módulo home
     IMPORTANTE: Toda vez que eu crio um componente novo eu devo declará-lo no meu módulo. Mas o angular faz isso sozinho
+6.  TEMPLATE E ASSETS
+    6.1.    Por default (angular.json), o angular mantem os assets do projeto em: 
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+    6.2.    Vou criar meu HTML customizado dentro de home.component.html            
+7.  EXPONDO O COMPONENTE (DESNECESSÁRIO SE USARMOS ROTAS)
+    IMPORTANTE: Os passos abaixo são usados quando não utilizamos rotas
+    7.1.    Como o componente está dentro de um módulo, precisamos "expor" este componente
+        7.1.1.  Se nós não expormos ele, teremos o erro:
+                Ex.:
+                'app-home' is not a known element:
+        7.1.2.  Para expor, vamos fazer no módulo "pai" do componente                
+    7.2.    Em home.module.ts, vamos exportar o módulo, adicionando o exports
+            Ex.:
+            exports: [
+                HomeComponent
+            ]
+    7.3.    Em app.module.ts, adicionar aos imports o HomeModule, que expôs o HomeComponent
+    7.4.    Com isso, posso ir em app.component.html e chamar <app-home> que é o seletor do componente
+8.  ORGANIZANDO AS ROTAS COM LAZY LOAD
+    IMPORTANTE: Vamos subistituir o que foi feito no item 7, para usar rotas com lazy load
+    8.1.    Em app.component.html, vamos retirar o acesso direto ao componente (<app-home>) e vamos trocar por uma diretiva que indica que
+            serão renderizados componentes por uma rota. Por isso usamos <router-outlet></router-outlet>
+    8.2.    Também não é necessário importar o módulo HomeModule em app.module.ts
+    8.3.    Em app-routing.module.ts, configurar o array de rotas       
+            Ex.:
+            const routes: Routes = [
+                { path: '', redirectTo: 'home', pathMatch: 'full'},
+                { path: 'home', loadChildren: () => import('./home/home.module').then(m => m.HomeModule) },
+            ];
+    8.4.    Por fim, em home-routing.module.ts, configurar a rota do componente home
+            Ex.:
+            const routes: Routes = [
+                { path: '', component: HomeComponent }
+            ];    
