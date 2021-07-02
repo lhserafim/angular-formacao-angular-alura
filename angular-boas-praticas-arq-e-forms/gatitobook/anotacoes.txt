@@ -63,3 +63,20 @@
             const routes: Routes = [
                 { path: '', component: HomeComponent }
             ];    
+9.  INTERFACE DE LOGIN
+    9.1.    O componente login faz parte do módulo home
+    9.2.    Usar o angular CLI e digitar: ng g c home/login
+        9.2.1.  Como foi criado dentro de home, o angular já faz atualiza o home.module.ts: UPDATE src/app/home/home.module.ts (566 bytes)
+    9.3.    Dentro de login.component.html, criar o código template (html)
+    9.4.    Em home.component.html, para chamar o login.component.html, pela rota, utilizar o router-outlet
+            Ex.:
+            <div class="col-md-6">
+                <!-- A diretiva router-outlet foi colocada aqui para que o Angular renderize o componente pelas rotas -->
+                <router-outlet></router-outlet>                
+            </div>
+    9.5.    Configurar a rota para este novo component dentro do arquivo de rotas do módulo: home-routing.module.ts
+        9.5.1.  Neste arquivo, criar uma rota filha para a rota existente
+                Ex.:
+                const routes: Routes = [
+                    { path: '', component: HomeComponent, children: [{path: '', component: LoginComponent}] }
+                ];  
