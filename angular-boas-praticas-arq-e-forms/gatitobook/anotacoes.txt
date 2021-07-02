@@ -80,3 +80,53 @@
                 const routes: Routes = [
                     { path: '', component: HomeComponent, children: [{path: '', component: LoginComponent}] }
                 ];  
+10. SERVIÇO DE AUTENTICAÇÃO
+    10.1.   Um local correto para colocar as regras de negócio no angular é nos services.
+    DICA:   Uma boa prática é colocar o serviço em um módulo separado
+    10.2.   Vamos criar um módulo e colocar o serviço dentro dele.
+        10.2.1. Gerando o módulo: ng g m autenticacao
+        10.2.2. Gerando o service: ng g s autenticacao/autenticacao
+    10.3.   Uma vez criado o serviço, vamos utilizar a injeção de dependência para se comunicar com o backend
+    10.4.   Em autenticacao.service.ts, injetar o HttpClient
+            Ex.:
+            constructor(private httpClient: HttpClient) { }
+    10.5.   E criar o método autenticar que irá fazer um post no endpoint
+            Ex.:
+            autenticar(usuario: string, senha: string): Observable<any> {
+                // O método post espera a url e o body como parâmetros
+                return this.httpClient.post('http://localhost:3000/user/login', {
+                userName: usuario,
+                password: senha,
+                });
+            }
+    10.6.   Agora o método precisa ser chamado pelo componente
+11. FORMULÁRIOS TEMPLATE-DRIVEN
+    11.1.   O angular pois duas maneiras de tratar formulários, temos o Template-Driven e os Reactive-Forms
+        11.1.   No formulário do login, que é mais simples, vamos utilizar o Template-Driven
+        11.2.   No template-driven, a maior parte do código fica no template (html)
+    IMPORTANTE: Para utilizar o template-driven, precisamos importar o módulo FormsModule
+    11.2.   Em home.module.ts, em imports, importar FormsModule
+    11.3.   Em seguida, vamos acessar o login.component.html e vamos adequa-lo com as diretivas do angular
+        11.3.1. Adicionar o event bind (ngSubmit) chamando o método de login()
+        11.3.2. Também vamos adicionar ao input uma diretiva two way data bind [(ngModel)] para os campos de formulário usuário e senha
+            11.3.2.1.   Com esta diretiva, faremos a comunicação entre formulário e classe
+            11.3.2.2.   Como estou usando o template-driven, utilizo a diretiva ngModel para passar o valor do input para
+                        os atributos da classe 
+    11.4.   Em login.component.ts, criar os atributos usuario e senha e o método login()
+12. CONSUMINDO O SERVIÇO DE AUTENTICAÇÃO
+    12.1.   Primeiramente, em app.module.ts, importar o HttpClientModule
+    12.2.   Vamos conectar nosso formulário ao nosso serviço de autenticacao. Em login.component.ts, vamos injetar o serviço
+            AutenticacaoService no constructor
+            Ex.:
+            constructor(private authService: AutenticacaoService) { }
+    12.3.   Feita a injeção, já posso chamar o método autenticar, que foi criado no serviço e fazer o subscribe no observable que é retornado
+            no método autenticar do service.
+            O subscribe chama 2 funções, uma para o sucesso e uma para o erro e posso chamá-las conforme exemplo
+            Ex.:
+            login() {
+                this.authService.autenticar(this.usuario, this.senha).subscribe(() => {
+                        console.log('Autenticado com sucesso');
+                    },(error) => {
+                        alert('Usuário ou senha inválido');
+                    });
+            }
