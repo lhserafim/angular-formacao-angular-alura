@@ -216,3 +216,38 @@
                 // Este método retorna um observable
                 return this.httpClient.post("http://localhost:3000/user/signup", NovoUsuario);
             }
+19. FORMULÁRIO REATIVO
+    19.1.   Neste formulário iremos colocar umas validações mais complexas e por isso vamos utilizar o formulário reativo, onde a maior parte da lógica fica na classe
+    19.2.   Em primeiro lugar, em home.module.ts, vamos importar o ReactiveFormsModule (similar ao que foi feito com o FormsModule)
+    19.3.   Em novo-usuario.component.ts, vamos criar um atributo que represente o estado do nosso formulário
+            Ex.:
+            novoUsuarioForm!: FormGroup;
+    19.4.   Também vamos fazer a injeção de dependência do FormBuilder no construtor e do nosso serviço de novo usuário
+            Ex.:
+            constructor(private formBuilder: FormBuilder, private novoUsuarioService: NovoUsuarioService) { }
+    19.5.   Vamos construir o objeto novoUsuarioForm e o local correto para isto é no ngOnInit. Isto porque ele é executado logo após a construção com sucesso da classe
+            Ex.:
+            ngOnInit(): void {
+                this.novoUsuarioForm = this.formBuilder.group({
+                email: [''],
+                fullName: [''],
+                userName: [''],
+                password: ['']
+                })
+            }
+    19.6.   Em seguida, vamos criar um método que será executado no evento de onSubmit do formulário
+            Ex.:
+            cadastrar() {
+                // getRawValue gera um objeto com o estado das variáveis do novo formulário
+                const novoUsuario = this.novoUsuarioForm.getRawValue() as NovoUsuario;
+                // as NovoUsuario é um cast e só posso fazê-lo pois os meus elementos de novoUsuarioForm são idênticos a NovoUsuario.ts
+            }
+    19.7.   Fazer o link da classe como template no novo-usuario.component.html. No elemento form, adicionar:
+            Ex.:
+            <form class="form mt-4" [formGroup]="novoUsuarioForm" (submit)="cadastrar()">
+        19.7.1. A diretiva [formGroup] é para falar que este formulário será representado por um formulário reativo
+        19.7.2. "novoUsuarioForm" é para indicar qual é o modelo TypeScript que representa o formulário
+        19.7.3. E ao submeter o formulário chamar o método cadastrar()
+    19.8.   Fazer o BIND de cada elemento com um elemento do nosso formulário. Para isso utilizamos o atributo FormControlName
+            Ex.:
+            <input placeholder="e-mail" class="form-control" formControlName="email"/>
