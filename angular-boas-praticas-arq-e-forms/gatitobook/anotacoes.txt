@@ -190,3 +190,9 @@
                 <button type="submit" class="btn btn-primary btn-block" [disabled]="loginForm.invalid">Login</button>                
     IMPORTANTE: Quando queremos pegar o estado de um elemento, utilizamos ngModel atribuindo a uma variável com #
                 Quando queremos pegar o estado do formulário todo, utilizamos o ngForm atribuindo a uma variável com #
+17. ROUTERLINK
+    17.1.   Para permitir que o componente navegue para outro, através de um link na tela, utilizamos a diretiva RouterLink
+    17.2.   Em login.component.html, criar um link, chamado o RouterLink
+            Ex.:
+            <p>Não é um usuário?<a [routerLink]="['novousuario']">Se cadastre!</a></p>         
+        17.2.1. O RouterLink aponta para um array com o path que eu quero acessar       
