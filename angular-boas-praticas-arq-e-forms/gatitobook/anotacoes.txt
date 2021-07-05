@@ -130,3 +130,51 @@
                         alert('Usuário ou senha inválido');
                     });
             }
+13. REDIRECIONANDO A ROTA
+    13.1.   Vamos criar uma novo módulo e uma nova rota para este módulo
+    13.2.   Digitar: ng g m animais --routing
+    13.3.   Criar o componente lista de animais: ng g c animais/lista-animais
+    13.4.   Agora, adicionar ao arquivo de rotas raiz app-routing.module.ts a rota para o novo módulo
+            Ex.:
+            { path: 'animais', loadChildren: () => import('./animais/animais.module').then(m => m.AnimaisModule) },
+    13.5.   Agora ir no arquivo de rotas do módulo animais-routing.module.ts e adicionar a rota
+            Ex.:
+            { path: '', component: ListaAnimaisComponent }
+    13.6.   Agora vamos alterar o nosso componente login.component.ts, para redirecionar para este componente caso tenha sucesso no login. 
+            Para isso iremos utilizar o serviço.
+        13.6.1. No construtor, importar o serviço de router
+                Ex.:
+                constructor(private router: Router) { }
+        13.6.2. Criar um método utilizando o router, para redirecionar para o novo componente.
+                Ex.:
+                ...
+                this.router.navigate(['animais']); // Também poderia usar o navigateByUrl
+14. COMPONENTE DE MENSAGEM
+    14.1.   Vamos criar módulo e um componente mensagem que poderá ser reutilizado na nossa aplicação
+    14.2.   No mensagem.component.html, adicionar o nosso template, com o atributo {{mensagem}}
+    14.3.   Na classe mensagem.component.ts, adicionar o decorator @Input() ao atributo mensagem e interpolá-lo com o template
+    IMPORTANTE: Como este componente não tem rota para acesso, devo fazer a exportação do mesmo
+    14.4.   Em mensagem.module.ts, fazer o export do componente
+            Ex.:
+            exports: [
+                MensagemComponent // é necessário exportar este componente
+            ]
+15. VALIDAÇÕES DE CAMPOS
+    15.1.   Vamos importar o componente no nosso módulo de home, em home.module.ts. Para isso adicionar ao array de imports o MensagemModule
+    15.2.   Como estamos utilizando o template-driven, a maior parte das regras fica no template (html)
+    15.3.   Em login.component.html, vamos adicionar o elemento <app-mensagem>, para chamar o componente
+    15.4.   Para enviar a mensagem para este componente, nós iremos usar o atributo mensagem, que tem o decorator @Input
+        15.4.1. Por ter este atributo com decorator, podemos colocá-lo como atributo no meu elemento
+                Ex.:
+                <app-mensagem mensagem="Usuário Obrigatório"></app-mensagem>
+        IMPORTANTE! Aqui o texto está ficando fixo na tela e precisamos implementar uma lógica para sumir com a mensagem quando o usuário for informado
+    15.5.   Para poder criar uma lógica que irá exibir/ocultar automaticamente o componente mensagem, precisamos de 3 coisas
+        15.5.1. Ler o ESTADO do elemento <input>, usando # + ngModel
+            15.5.1.2.   #campoUsuario="ngModel"
+        15.5.2. Utilizar o atributo html required, para que o HTML marque como inválido caso o campo não esteja preenchido
+        15.5.3. Usar a diretiva *ngIf + atributo invalid
+                Ex.:
+                <app-mensagem  *ngIf="campoUsuario.invalid" mensagem="Usuário Obrigatório"></app-mensagem>
+                        
+                
+
