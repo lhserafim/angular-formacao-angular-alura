@@ -175,6 +175,18 @@
         15.5.3. Usar a diretiva *ngIf + atributo invalid
                 Ex.:
                 <app-mensagem  *ngIf="campoUsuario.invalid" mensagem="Usuário Obrigatório"></app-mensagem>
-                        
-                
-
+16. VALIDAÇÕES DE FORMULÁRIO
+    16.1.   Vamos ativar a validação de campos (acima) apenas quando o usuário passar no campo e não informar nada
+        16.1.1. Para isso podemos utilizar o atributo touched junto de invalid, pois o touched retorna verdadeiro se o campo foi "tocado"
+                Ex.:
+                <app-mensagem  *ngIf="campoUsuario.invalid && campoUsuario.touched" mensagem="Usuário Obrigatório"></app-mensagem>
+    16.2.   Vamos deixar o botão desativado enquanto os campos usuário e senha não forem preenchidos
+        16.2.1. Como estamos trabalhando com 2 campos do formulário, precisamos criar a variável para pegar o estado no elemento <form>    
+                Ex.:
+                <form class="form mt-4" (ngSubmit)="login()" #loginForm="ngForm">
+        16.2.2. No elemento button, preciso habilitar/desabilitar o botão. Para isso, preciso usar o atributo disabled com uma lógica
+                Ou seja, só será disabled, caso o estado do formulário seja inválido
+                Ex.:
+                <button type="submit" class="btn btn-primary btn-block" [disabled]="loginForm.invalid">Login</button>                
+    IMPORTANTE: Quando queremos pegar o estado de um elemento, utilizamos ngModel atribuindo a uma variável com #
+                Quando queremos pegar o estado do formulário todo, utilizamos o ngForm atribuindo a uma variável com #

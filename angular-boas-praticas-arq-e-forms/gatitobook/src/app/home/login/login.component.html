@@ -1,6 +1,7 @@
 <h4 class="text-center">Login</h4>
 
-<form class="form mt-4" (ngSubmit)="login()">
+<form class="form mt-4" (ngSubmit)="login()" #loginForm="ngForm">
+    <!-- Nesta variável de referência #loginForm="ngForm", temos o estado do formulário inteiro! -->
     <div class="form-group">
         <input 
             class="form-control" 
@@ -11,7 +12,7 @@
             #campoUsuario="ngModel"
             required
             />
-            <app-mensagem  *ngIf="campoUsuario.invalid" mensagem="Usuário Obrigatório"></app-mensagem>
+            <app-mensagem  *ngIf="campoUsuario.invalid && campoUsuario.touched" mensagem="Usuário Obrigatório"></app-mensagem>
     </div>
 
     <div class="form-group">
@@ -24,8 +25,8 @@
             #campoSenha="ngModel"
             required
             />
-            <app-mensagem  *ngIf="campoSenha.invalid" mensagem="Senha Obrigatória"></app-mensagem>
+            <app-mensagem  *ngIf="campoSenha.invalid && campoSenha.touched" mensagem="Senha Obrigatória"></app-mensagem>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-block">Login</button>
+    <button type="submit" class="btn btn-primary btn-block" [disabled]="loginForm.invalid">Login</button>
 </form>
