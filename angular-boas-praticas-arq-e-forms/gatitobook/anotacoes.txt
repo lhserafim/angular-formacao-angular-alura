@@ -195,4 +195,24 @@
     17.2.   Em login.component.html, criar um link, chamado o RouterLink
             Ex.:
             <p>Não é um usuário?<a [routerLink]="['novousuario']">Se cadastre!</a></p>         
-        17.2.1. O RouterLink aponta para um array com o path que eu quero acessar       
+        17.2.1. O RouterLink aponta para um array com o path que eu quero acessar. A vantagem de usar um array ao invés de ="/novousuario", é que o array 
+                permite passar parâmetros
+18. SERVIÇO DE NOVO USUÁRIO
+    18.1.   Criar o serviço: ng g s home/novo-usuario/novo-usuario
+    DICA:   É uma boa prática utilizar a capacidade de tipagem do TypeScript que o Angula utiliza, para evitar erros e melhorar o auto complete.
+    18.2.   Para isso, vamos criar uma interface TypeScript (model). Digitar: ng g interface home/novo-usuario/novo-usuario. Estamos criando um modelo para 
+            poder passar para o backend.
+            Ex.:
+            export interface NovoUsuario {
+                userName: string;
+                email:  string;
+                fullName: string;
+                password: string;
+            }
+    18.3.   Em novo-usuario.service.ts, por ser um serviço, por padrão injetamos o HttpClient no construtor. 
+    18.4.   Criar o método que irá consumir o backend para cadastrar um novo usuário e retornar um observable
+            Ex.:
+            cadastraNovoUsuario(NovoUsuario: NovoUsuario) {
+                // Este método retorna um observable
+                return this.httpClient.post("http://localhost:3000/user/signup", NovoUsuario);
+            }
