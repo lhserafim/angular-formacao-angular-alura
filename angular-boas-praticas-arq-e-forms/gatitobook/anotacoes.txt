@@ -251,3 +251,29 @@
     19.8.   Fazer o BIND de cada elemento com um elemento do nosso formulário. Para isso utilizamos o atributo FormControlName
             Ex.:
             <input placeholder="e-mail" class="form-control" formControlName="email"/>
+20. VALIDAÇÃO PADRÃO
+    20.1.   No formulário reativo, todas as definições de validação ficam no componente (classe).
+    20.2.   Em novo-usuario.component.ts, dentro do ngOnInit, eu posso adicionar ao array dos atributos um array de validações. Estas validações podem ser customizadas
+            ou posso utilizar a classe Validators do Angular.
+            Ex.:
+            ngOnInit(): void {
+                this.novoUsuarioForm = this.formBuilder.group({
+                    email: ['', [Validators.required, Validators.email]],
+                    fullName: ['', [Validators.required, Validators.minLength(4)]],
+                    ...
+    20.3.   Com as validações definidas no componente eu vou exibi-las no template
+    20.4.   Em novo-usuario.component.html, vou utilizar o componente mensagem <app-mensagem>
+        20.4.1. Vou utilizar o ngIf para exibir/ocultar a mensagem
+        20.4.2. Vou passar para o atributo mensagem o texto desejado
+                Ex.:
+                <app-mensagem 
+                    *ngIf="
+                        novoUsuarioForm.get('email')?.errors?.required && 
+                        novoUsuarioForm.get('email')?.touched
+                    "
+                    mensagem="Email obrigatório"
+                >
+                </app-mensagem>
+    IMPORTANTE! Como utilizamos o método .get() e este pode ser undefined, é IMPORTANTE utilizar o "safe navigation" do TypeScript. Isto irá impedir que façamos a lógica
+                em cima de undefined. A expressão safe navigation é representada por ?
+    DICA:   Eu posso especificar o tipo do erro (errors?.required) ou deixar genérico (errors?)    
