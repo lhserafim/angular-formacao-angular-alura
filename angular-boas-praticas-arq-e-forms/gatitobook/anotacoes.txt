@@ -277,3 +277,21 @@
     IMPORTANTE! Como utilizamos o método .get() e este pode ser undefined, é IMPORTANTE utilizar o "safe navigation" do TypeScript. Isto irá impedir que façamos a lógica
                 em cima de undefined. A expressão safe navigation é representada por ?
     DICA:   Eu posso especificar o tipo do erro (errors?.required) ou deixar genérico (errors?)    
+21. VALIDAÇÕES CUSTOMIZADAS
+    21.1.   Os formulários reativos permitem que nós implementemos validações customizadas. Para isso, basta criar uma função, retornando um objeto com valor boolean
+    21.2.   Preciso criar um arquivo ts, para criar a função dentro
+        21.2.1. Criar o arquivo minusculo.validator.ts, dentro do diretório do componente novo-usuario, e criar a função minusculoValidator
+                Ex.:
+                export function minusculoValidator(control: AbstractControl) {
+                    const valor = control.value as string; // Fiz o cast para string para o TS entender e habilitar o autocomplete
+                    if (valor !== valor.toLowerCase()) {
+                        return { minusculo: true }; // este atributo deste objeto (minusculo) é o que será passado no template
+                    } else {
+                        return null;
+                    }
+                }
+    IMPORTANTE! minusculo é o atributo do objeto e este nome é que será passado na validação no template
+    21.3.   Retornar a classe do componente e passar a validação como array de validação
+            Ex.:
+            userName: ['', [minusculoValidator]],
+    21.4.   Chamar a função no template, da mesma forma que chamamos uma validação padrão
