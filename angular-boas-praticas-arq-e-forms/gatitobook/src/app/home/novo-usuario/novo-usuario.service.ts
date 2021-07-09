@@ -14,4 +14,9 @@ export class NovoUsuarioService {
     // Este método retorna um observable
     return this.httpClient.post("http://localhost:3000/user/signup", NovoUsuario);
   }
+
+  verificaUsuarioExistente(nomeUsuario: String) {
+    return this.httpClient.get(`http://localhost:3000/user/exists/${nomeUsuario}`);
+  }
+  
 }

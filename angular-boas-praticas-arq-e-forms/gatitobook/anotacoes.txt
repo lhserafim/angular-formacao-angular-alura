@@ -295,3 +295,33 @@
             Ex.:
             userName: ['', [minusculoValidator]],
     21.4.   Chamar a função no template, da mesma forma que chamamos uma validação padrão
+22. VALIDAÇÕES ASSÍNCRONAS
+    22.1.   Em algumas situações precisamos validar um dado que não está no nosso formulário, como um login de usuário por exemplo, neste caso
+            devemos utilizar validações assíncronas
+    22.2.   Em novo-usuario.service.ts, criar um novo método para consultar o usuário
+            Ex.:
+            verificaUsuarioExistente(nomeUsuario: String) {
+                return this.httpClient.get(`http://localhost:3000/users/exists/${nomeUsuario}`);
+            }
+    22.3.   Para não misturar as regras de negócio, vamos criar um novo service para esta consulta. Digitar: ng g s home/novo-usuario/usuario-existe
+    22.4.   Em usuario-existe.service.ts, vamos injetar o nosso serviço de novo-usario no construtor
+            Ex.:
+            constructor(private novoUsuarioService: NovoUsuarioService) { }
+    22.4.   Em seguida criar o método assíncrono que irá capturar o fluxo da digitação e validar se o usuário existe no backend usuarioJaExiste()
+    22.5.   Voltar para o componente novo-usuario.component.ts e injetar no construtor o serviço criado
+            Ex.:
+            private usuarioExistenteService: UsuarioExisteService
+    22.6.   Em seguida, adicionar o array de validação ao atributo userName.
+            IMPORTANTE! O array de validação assíncrona precisa estar na terceira posição 
+            Ex.:
+            userName: ['', [minusculoValidator], [this.usuarioExistenteService.usuarioJaExiste()]],
+    22.7.   Em novo-usuario.component.html, abaixo do userName, colocar outro <app-message>, para chamar o método de validação assíncrona
+            Ex.:
+            <app-mensagem
+                *ngIf="
+                    novoUsuarioForm.get('userName')?.errors?.usuarioExistente
+                "
+                mensagem="Usuário já existe"
+            >
+            </app-mensagem>  
+    DICA:   Usar o debounceTime() para evitar reduzir o número de requisições no backend (https://stackoverflow.com/questions/50739211/how-to-use-debouncetime-in-an-angular-component)
