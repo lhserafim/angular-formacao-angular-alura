@@ -406,3 +406,89 @@
                     }
                 )
             }
+25. TOKEN
+    25.1.   Para manipular as informações do JWT que o servidor está mandando, vamos utilizar uma biblioteca auxiliar no nosso projeto
+        25.1.1. No terminal, na raiz da aplicação, instalar: npm i jwt-decode
+    25.2.   Criar o serviço que irá cuidar da manipulação do token, na raiz da aplicação: ng g s autenticacao/token
+    25.3.   Em token.service.ts, vamos criar uma constante para manipular o local storage do chrome
+            Ex.:
+            const KEY = 'token';
+    25.4.   Criar os 4 métodos que serão utilizados para manipular o token
+26. SERVIÇO DE USUÁRIO
+    26.1.   Este serviço será responsável por entregar aos componentes as informações de usuário, baseado no token JWT
+    26.2.   Vamos criar um serviço de usuário: ng g s autenticacao/usuario/usuario
+    26.3.   E uma interface (model): ng g interface autenticacao/usuario/usuario
+        26.3.1. Criar o modelo
+                DICA: É uma boa prática deixar todos os campos como opcionais pois não temos como garantir o que retorna do backend
+                Ex.:
+                export interface Usuario {
+                    id?: number;
+                    name?: string;
+                    email?: string;
+                }
+    26.4.   Em usuario.service.ts, fazer a injeção do serviço de token
+            Ex.:
+            constructor(private tokenService: TokenService) { }
+    26.5.   Importar: import jwt_decode from 'jwt-decode';    
+    26.6.   Criar o método que vai decodificar o token
+            Ex.:
+            private decodificaJWT() {
+                const token = this.tokenService.retornaToken();
+                const usuario = jwt_decode(token) as Usuario; // Fazendo um cast para que o token seja transformado na interface (model) usuario.ts
+            } 
+    26.7.   Agora preciso enviar a informação de usuário a todos os componentes interessados. Para isso vamos utilizar um recurso do angular 
+            que é o subject. O subject é um observable de duas vias. Ele pode receber e enviar informações
+            Ex.:
+            private usuarioSubject = new BehaviorSubject<Usuario>({});
+    26.8.   Criar os métodos para manipular o token
+27. SERVIÇO DE AUTENTICAÇÃO
+    27.1.   Vamos alterar o nosso serviço de autenticacao, para salvar o usuário
+    27.2.   Em autenticacao.service.ts, vamos alterar o método autenticar, para recuperar o response COMPLETO e não só o body.
+            Alterar o retorno para:
+            Ex.:
+            Observable<HttpResponse<any>>
+            e adicionar o observe, para o Angular entender que quero o reponse completo (com header)
+            Ex.:
+            { observe: 'reponse'}
+    27.3.   Fazer a importação do serviço de usuário no construtor.
+            Ex.:
+            private usuarioService: UsuarioService
+    27.4.   Adicionar o tap() para salvar o token       
+            Ex.:
+            .pipe(
+                tap((res) => { // Utilizamos o tap() quando queremos fazer alguma implementação que NÃO NOS IMPORTA O RESULTADO. Ou seja, chamar algo para logar ou salvar, mas não vamos usar o retorno
+                    const authToken = res.headers.get('x-access-token') ?? '';
+                    this.usuarioService.salvaToken(authToken);
+                })
+28. CABECALHO 
+    28.1.   Vamos criar um componente para informar se o usuário está autenticado
+    28.2.   Vamos criar o módulo: ng g m componentes/cabecalho
+    28.3.   E dentro colocar o componente: ng g c componentes/cabecalho
+    28.4.   Vamos acessar o componente criado cabecalho e injetar o servico de usuario no construtor
+            Ex.:
+            constructor(private usuarioService: UsuarioService) { }
+    28.5.   Vamos guardar o usuário em um atributo da classe.
+            user$
+            DICA:   Por ser uma variável que guarda um observable, por convenção, utilizamos o $ no nome
+    28.6.   Implementar o método de logout que vai navegar para a tela de login
+    28.7.   Em cabecalho.module.ts, importar o RouterModule para poder usá-lo no template
+    28.8.   Abrir o template cabecalho.component.html e construir o nosso template
+    28.7.   Em cabecalho.module.ts, exportar o componente CabecalhoComponent
+29. RODAPÉ
+    29.1.   Assim como para o cabeçalho, para o rodapé também iremos criar o módulo e o componente
+            Ex.:
+            ng g m componentes/rodape
+            ng g c componentes/rodape
+    29.2.   Vamos acessar o template rodape e criar o template (html)
+    29.3.   Importar o RouterModule e exportar o RodapeComponent
+    29.4.   Como eu quero que tanto o rodapé, quanto o cabecalho sejam exibidos em todas as páginas, vamos invocá-los na raiz app.module.ts
+        29.4.1. Importar CabecalhoModule e RodapeModule
+    29.5.   Acessar o app.component.html e adicionar os elementos cabecalho e rodape ao template
+            Ex.:
+            <app-cabecalho></app-cabecalho>
+            <router-outlet></router-outlet>
+            <app-rodape></app-rodape>
+
+    
+
+    

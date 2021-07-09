@@ -1,0 +1,22 @@
+<header class="sticky-top">
+    <nav class="navbar navbar-light bg-white">
+        <a class="navbar-brand">Gatito Book</a>
+        <!-- Vamos usar o pipe com async para pegar a informacao do usuário e fazer o subscribe deste observable 
+             as user, é uma variável que vamos usar no template -->
+        <div *ngIf="user$ | async as user">
+            <div *ngIf="user.name; else login"> <!-- Se o usuário existir exibe os elementos abaixo, se não, chama o template pelo id #login -->
+                <i class="fa fa-user-circle mr-1"></i>
+                <a class="mr-1">{{ user.name }}</a>
+                <a (click)="logout()">Logout</a>
+            </div>
+            
+        </div>
+    </nav>
+
+    <!-- ng-template é um componente especial do angular e só será exibido se nós chamarmos por ele -->
+    <ng-template #login>
+        <span class="navbar-text">
+            <a [routerLink]="['']">Login</a>
+        </span>
+    </ng-template>
+</header>
