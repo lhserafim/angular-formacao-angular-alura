@@ -325,3 +325,84 @@
             >
             </app-mensagem>  
     DICA:   Usar o debounceTime() para evitar reduzir o número de requisições no backend (https://stackoverflow.com/questions/50739211/how-to-use-debouncetime-in-an-angular-component)
+23. VALIDANDO COM FORMBUILDER
+    23.1.   Validando mais de um campo com formBuilder.group()
+            Durante o curso utilizei uma outra forma de validação de formulário adicionando um novo valor à função group() do formBuilder. Antes fizemos um arquivo novo 
+            chamado minusculo.validador.ts e dentro fizemos a validação do nome de usuário para que apenas letras minúsculas sejam utilizadas. Só que essa função é chamada 
+            apenas no campo de usuário. A função group() pode receber um parâmetro extra que é para validações e essas validações devem estar dentro de um objeto da mesma 
+            forma que os inputs do formulário são declarados.
+            EX.:
+            {
+                validators: [funçãoDeValidação],
+            }
+    23.2.   Criei uma outra validação para conferir se os campos de nome de usuário e senha são iguais, então para isso utilizei a mesma estratégia do arquivo minusculo.validador.ts. 
+            Foi criado um arquivo chamado usuario-senha-iguais.validator.ts e dentro há a seguinte estrutura:
+            Ex.:
+            import { FormGroup } from '@angular/forms';
+
+            export function usuarioSenhaIguaisValidator(formGroup: FormGroup) {
+            const username = formGroup.get('userName')?.value ?? '';
+            const password = formGroup.get('password')?.value ?? '';
+
+            if (username.trim() + password.trim()) {
+                return username !== password ? null : { senhaIgualUsuario: true };
+            } else {
+                return null;
+            }
+            }
+    23.3.   Esse arquivo precisa importar o FormGroup do Angular e depois podemos construir a função que fará a verificação do nome de usuário e senha.
+            Precisamos do FormGroup para acessar esses dois parâmetros do nosso formulário e guardamos cada um desses parâmetros em variáveis e depois fazer um if ternário 
+            para validar esses dois campos.
+            No final basta adicionar a mensagem de erro no HTML:           
+            Ex.:
+            <div class="form-group">
+                <input
+                    type="password"
+                    placeholder="Senha"
+                    class="form-control"
+                    formControlName="password"
+                />
+                <app-mensagem
+                    *ngIf="novoUsuarioForm.errors?.senhaIgualUsuario"
+                    mensagem="Senha deve ser diferente do usuário"
+                >
+                </app-mensagem>
+            </div>
+    23.4.   Não podemos nos esquecer de importar essa função em nosso arquivo novo-usuario.components.ts: import { usuarioSenhaIguaisValidator } from './usuario-senha-iguais.validator';
+    23.5.   E também precisamos colocar esse objeto de validators depois do objeto de inputs do form:
+            Ex.:
+            this.novoUsuarioForm = this.formBuilder.group(
+            {
+                email: ['', [Validators.required, Validators.email]],
+                fullName: ['', [Validators.required, Validators.minLength(4)]],
+                userName: ['', [minusculoValidator]],
+                password: [''],
+            },
+            {
+                validators: [usuarioSenhaIguaisValidator],
+            }
+            );
+24. CADASTRO DE USUÁRIO
+    24.1.   Agora é a hora de enviar o usuário para o backend. No novo-usuario.component.ts, importar o Router
+            Ex.:
+            private router: Router) { }
+    24.2.   No método cadastrar, verificar se o formuário é válido
+            Ex.:
+            if (this.novoUsuarioForm.valid) {
+                ...
+            }
+        24.2.1. Caso o formulário seja válido, chamar o método cadastraNovoUsuario, fazendo o subscribe no observable
+            24.2.1.1.   Em caso de sucesso navegar para a home, se não exibir o erro no console
+            Ex.:
+            cadastrar() {
+                if (this.novoUsuarioForm.valid) {
+                const novoUsuario = this.novoUsuarioForm.getRawValue() as NovoUsuario;
+                this.novoUsuarioService.cadastraNovoUsuario(novoUsuario).subscribe(
+                    () => {
+                    this.router.navigate(['']);
+                    },
+                    (error) => {
+                    console.log(error);
+                    }
+                )
+            }
