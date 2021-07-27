@@ -1,0 +1,25 @@
+1.  RODANDO O BACKEND E ATUALIZANDO O FRONT
+    1.1.    Após descompactar a pasta, entre pela sua linha de comando na pasta api, use o comando npm i, para instalar as dependências do back-end, 
+            e execute-o com o comando npm start. O back-end deve ser executado durante os nossos exercícios.
+    1.2.    No front, rodar o comando npm i para instalar as dependências antes de iniciar o desenvolvimento
+2.  CRIANDO COMPONENTES
+    2.1.    Criar o componente que vai criar o cartão que vai representar o animal.
+            Digitar:    ng g c animais/animal
+    2.2.    Em animal.component.html, adicionar a tag de img
+            Ex.:
+            <img [src]="url" [alt]="descricao" class="img-thumbnail">
+            DICA!   Como a informação é dinâmica, estou usando a diretiva [] para passar a url e a descricao
+    2.3.    Na classe animal.component.ts, definir as variaveis que serão ligadas ao template.
+        2.3.1.  Para recuperar a url, vamos utilizar os métodos set e get do JS, conforme exemplo abaixo:
+                Ex.:
+                @Input() set url(url: string) {
+                    if (url.startsWith('data')) { // Se a url começar com data, eu sei que ela está vindo da própria aplicação e não de um http, como um back
+                    this.urlOriginal = url;
+                    } else {
+                    this.urlOriginal = `${API}/imgs/${url}`; // Está vindo da API
+                    }
+                }
+
+                get url(): string {
+                    return this.urlOriginal;
+                }
